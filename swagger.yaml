@@ -1,5 +1,71 @@
 openapi: 3.0.2
 info:
-  title: ITA21
+  title: Appointment Scheduling System
   version: 1.0.0
-  description: Demonstration API
+paths:
+  /users:
+    summary: Path used to manage user registration.
+    description: >-
+      The REST endpoint/path used to register users. This path contains a
+      POST operation to register users.
+    post:
+      requestBody:
+        description: User registration information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+            examples:
+              User:
+                value:
+                  email: user@example.com
+                  password: mypassword123
+        required: true
+      tags:
+        - Users
+      responses:
+        '201':
+          description: User registered successfully
+        '400':
+          description: Bad Request
+          content:
+            text/html:
+              examples:
+                missingFields:
+                  value: Email and password are required
+                invalidJSON:
+                  value: 'Unexpected token } in JSON at position 32'
+        '409':
+          description: Conflict
+          content:
+            text/html:
+              examples:
+                emailExists:
+                  value: Email already exists
+      operationId: registerUser
+      summary: Register a User
+      description: Registers a new user with the provided email and password.
+components:
+  schemas:
+    User:
+      title: User
+      description: A registered user
+      type: object
+      properties:
+        email:
+          type: string
+          description: User's email address
+          example: user@example.com
+        password:
+          type: string
+          description: User's password
+          example: mypassword123
+      required:
+        - email
+        - password
+      example:
+        email: user@example.com
+        password: mypassword123
+tags:
+  - name: /users
+    description: ''
