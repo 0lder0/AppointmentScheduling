@@ -9,43 +9,46 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
 
     <!-- Link to Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
     <title>Appointment Scheduler</title>
 </head>
 <body>
 <div id="app">
-    <button class="btn btn-primary mt-3" v-if="!loggedIn" @click="showSignUpModal()">Sign Up</button>
+    <div class="card" id="front-page">
+        <button class="btn btn-primary mt-3" v-if="!loggedIn" @click="showSignUpModal()">Sign Up</button>
 
-    <div class="modal" id="register-modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Register Form</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="createUser">
-                        <div class="form-group mb-3">
-                            <label for="email">Email</label>
-                            <input type="text" class="form-control" placeholder="Email" name="email" v-model="registerEmail">
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="password">Password</label>
-                            <input type="password" class="form-control" placeholder="Password" name="password" v-model="registerPassword">
-                        </div>
-                        <div class="d-grid mt-3">
-                            <button class="btn btn-primary mt-3">Sign Up</button>
-                        </div>
-                    </form>
+        <div class="modal" id="register-modal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Register Form</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form @submit.prevent="createUser">
+                            <div class="form-group mb-3">
+                                <label for="email">Email</label>
+                                <input type="text" class="form-control" placeholder="Email" name="email"
+                                       v-model="registerEmail">
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" placeholder="Password" name="password"
+                                       v-model="registerPassword">
+                            </div>
+                            <div class="d-grid mt-3">
+                                <button class="btn btn-primary mt-3">Sign Up</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <br>
-    <button class="btn btn-primary mt-3" v-if="!loggedIn" @click="showLoginModal">Login</button>
-    <button class="btn btn-primary mt-3" v-if="loggedIn" @click="logoutUser">Logout</button>
+        <button class="btn btn-primary mt-3" v-if="!loggedIn" @click="showLoginModal">Login</button>
+    </div>
 
     <div class="modal" id="login-modal">
         <div class="modal-dialog">
@@ -58,11 +61,13 @@
                     <form @submit.prevent="loginUser">
                         <div class="form-group mb-3">
                             <label for="email">Email</label>
-                            <input type="text" class="form-control" placeholder="Email" name="email" v-model="loginEmail">
+                            <input type="text" class="form-control" placeholder="Email" name="email"
+                                   v-model="loginEmail">
                         </div>
                         <div class="form-group mb-3">
                             <label for="password">Password</label>
-                            <input type="password" class="form-control" placeholder="Password" name="password" v-model="loginPassword">
+                            <input type="password" class="form-control" placeholder="Password" name="password"
+                                   v-model="loginPassword">
                         </div>
                         <div class="d-grid mt-3">
                             <button class="btn btn-primary mt-3">Login</button>
@@ -72,12 +77,66 @@
             </div>
         </div>
     </div>
+
+    <div id="main-page">
+        <div>
+            <button class="btn btn-primary mt-3" v-if="loggedIn" @click="logoutUser">Logout</button>
+            <br>
+            <button class="btn btn-primary mt-3" v-if="loggedIn" @click="showAppointmentModal">New Appointment</button>
+        </div>
+
+    </div>
+
+    <div class="modal" id="appointment-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Creating New Appointment</h5>
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                            aria-label="Cancel Appointment">Cancel
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="createAppointment">
+                        <div class="form-group mb-3">
+                            <label for="title" style="font-size: 24px">Title</label>
+                            <input type="text" class="form-control form-control-lg" placeholder="Jaanus Visit" name="title">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="description">Description</label>
+                            <input type="text" class="form-control" placeholder="Going to Jaanus" name="description">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="date">Date</label>
+                            <input type="date" class="form-control" placeholder="Date" name="date">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="time">Start Time</label>
+                            <input type="time" class="form-control" placeholder="start-time" name="start-time">
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="time">End Time</label>
+                            <input type="time" class="form-control" placeholder="end-time" name="end-time">
+                        </div>
+                        <div class="d-grid mt-3">
+                            <button class="btn btn-primary mt-3">Create Appointment</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
-
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+        crossorigin="anonymous"></script>
 <script src="client.js"></script>
 </body>
 </html>

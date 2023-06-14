@@ -13,7 +13,7 @@ createApp({
             sessionId: null,
             userId: null
         }
-},
+    },
     async created() {
         if (localStorage.getItem('sessionId')) {
             this.sessionId = localStorage.getItem('sessionId');
@@ -21,7 +21,7 @@ createApp({
         if (this.sessionId) {
             try {
                 this.loggedIn = true;
-                this.userId = response.data.userId;
+                this.userId = localStorage.getItem('userId');
             } catch (error) {
                 console.log(error)
             }
@@ -32,17 +32,17 @@ createApp({
             axios.post('/users', {
                 email: this.registerEmail,
                 password: this.registerPassword
-    })
-        .then(response => {
-            alert(response.data)
-            this.registerPassword = '';
-            this.registerModal.hide();
-        })
-        .catch(error => {
-            this.registerPassword = '';
-            alert(error.response.data)
-        })
-},
+            })
+                .then(response => {
+                    alert(response.data)
+                    this.registerPassword = '';
+                    this.registerModal.hide();
+                })
+                .catch(error => {
+                    this.registerPassword = '';
+                    alert(error.response.data)
+                })
+        },
         showSignUpModal() {
             this.registerModal = new bootstrap.Modal(document.getElementById("register-modal"), {});
             this.registerModal.show();
@@ -64,6 +64,7 @@ createApp({
                     console.log(response)
 
                     localStorage.setItem('sessionId', this.sessionId + this.userId);
+                    localStorage.setItem('userId', this.userId);
                 })
                 .catch(error => {
                     this.loginPassword = '';
@@ -79,7 +80,35 @@ createApp({
             this.sessionId = null;
             this.userId = null;
             localStorage.removeItem('sessionId');
+            localStorage.removeItem('userId');
 
+        },
+        showAppointmentModal() {
+            this.appointmentModal = new bootstrap.Modal(document.getElementById("appointment-modal"), {});
+            this.appointmentModal.show();
+        },
+        createAppointment() {
+            axios.post('/appointments', {
+                title: this.appointmentTitle,
+                description: this.appointmentDescription,
+                date: this.appointmentDate,
+                startTime: this.appointmentStartTime,
+                endTime: this.appointmentEndTime,
+                userId: this.userId
+            })
+                .then(response => {
+                    alert(response.data)
+                    this.appointmentDate = '';
+                    this.appointmentStartTime = '';
+                    this.appointmentEndTime = '';
+                    this.appointmentModal.hide();
+                })
+                .catch(error => {
+                    this.appointmentDate = '';
+                    this.appointmentStartTime = '';
+                    this.appointmentEndTime = '';
+                    alert(error.response.data)
+                })
         }
     }
 

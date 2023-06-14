@@ -49,6 +49,9 @@ app.use((err, req, res, next) => {
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+
+let userId = null;
+
 // Register user
 app.post('/users', encodeUrl, (req, res) => {
     let password = req.body.password;
@@ -107,16 +110,56 @@ app.post('/sessions', encodeUrl, (req, res) => {
         // compare password with the hashed password
         bcrypt.compare(password, result[0].password, function (err, result) {
             if (!result) {
-               return res.status(401).send('Incorrect password');
+                return res.status(401).send('Incorrect password');
             }
 
             // set session ID and user ID
             req.session.id = uuidv4();
-            req.session.userId = user.id;
+            userId = user.id;
 
-            res.status(201).json({ message: 'User logged in successfully', sessionId: req.session.id, userId: req.session.userId });
+            res.status(201).json({
+                message: 'User logged in successfully',
+                sessionId: req.session.id,
+                userId: userId
+            });
         });
     });
+});
+
+app.post("/appointments", encodeUrl, (req, res) => {
+    let title = req.body.title;
+    let description = req.body.description;
+    let date = req.body.date;
+    let startTime = req.body.startTime;
+    let endTime = req.body.endTime;
+    let user = userId;
+
+    console.log(user)
+
+    // check if user is logged in
+    if (!user) {
+        return res.status(401).send('Unauthorized');
+    }
+
+    // check if date is in the past
+    if (new Date(date) < new Date()) {
+        return res.status(400).send('Date is in the past');
+    }
+
+    // check if start time is before end time
+    if (startTime >= endTime) {
+        return res.status(400).send('Start time is before end time');
+    }
+
+    // insert appointment into database
+    con.query(`INSERT INTO appointments (title, description, date, startTime, endTime, userId)
+                  VALUES ('${title}', '${description}', '${date}', '${startTime}', '${endTime}', '${user}')`, function (err, result) {
+        if (err) {
+            return console.log(err);
+        }
+    })
+
+    res.status(201).send('Appointment booked successfully');
 });
 
 
